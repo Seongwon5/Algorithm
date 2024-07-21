@@ -14,8 +14,8 @@ void getMin(int*ability,int*currentTeam,int n,int startIdx,int remain){
         minAbilityDiff=min(minAbilityDiff,getDiff(ability,n,currentTeam));
     }
     else{
-        for(int i=startIdx+1,i<=n-remain;i++){
-            currentTeam[N/2-remain]=startIdx;
+        for(int i=startIdx+1;i<=n-remain;i++){
+            currentTeam[n/2-remain]=startIdx;
             getMin(ability,currentTeam,n,i,remain-1);
         }
     }
