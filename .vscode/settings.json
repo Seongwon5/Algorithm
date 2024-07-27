@@ -2,6 +2,8 @@
     "files.associations": {
         "iostream": "cpp",
         "algorithm": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "*.tcc": "cpp",
+        "initializer_list": "cpp"
     }
 }
