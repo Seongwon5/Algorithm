@@ -5,5 +5,6 @@
         "map": "cpp",
         "*.tcc": "cpp",
         "initializer_list": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
