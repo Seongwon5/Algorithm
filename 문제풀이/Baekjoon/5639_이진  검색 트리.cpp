@@ -18,21 +18,21 @@ vector<int> postOrder(vector<int>&preOrdered){
         else{
             right.push_back(preOrdered[i]);//키보다 크면 오른쪽
         }
-        
-        postOrder(left);
-        postOrder(right);
+    }    
+    postOrder(left);
+    postOrder(right);
 
-        for(int i=0;i<left.size();i++){//left 의 변환결과, right의 변환결과, 
-        //key 순으로 집어넣어 후위순회된 결과를 만들어 리턴한다.
-            postOrdered.push_back(left[i]);
-        }
-        for(int i=0;i<right.size();i++){
-            postOrdered.push_back(right[i]);
-        }
-        postOrdered.push_back(key);
-
-        return postOrdered;
+    for(int i=0;i<left.size();i++){//left 의 변환결과, right의 변환결과, 
+    //key 순으로 집어넣어 후위순회된 결과를 만들어 리턴한다.
+        postOrdered.push_back(left[i]);
     }
+    for(int i=0;i<right.size();i++){
+        postOrdered.push_back(right[i]);
+    }
+    postOrdered.push_back(key);
+
+    return postOrdered;
+    
 }
 int main(){
     //이진 검색 트리를 전위 순회한 결과가 주어질 때
