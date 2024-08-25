@@ -6,7 +6,10 @@
         "*.tcc": "cpp",
         "initializer_list": "cpp",
         "random": "cpp",
-        "limits": "cpp"
+        "limits": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "utility": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
