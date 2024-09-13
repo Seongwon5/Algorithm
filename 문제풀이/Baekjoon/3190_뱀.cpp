@@ -79,33 +79,43 @@ int main(){
         commandQueue.push(cm);
     }
     
-    snake.push_front(make_pair(0,0));
+    snake.push_front(make_pair(1,1));
 
     while(true){//게임을 실행하는 무한 루프
         //1. snake가 이동 후 파괴되는지?
         ++t;//1초 증가
+        //cout<<endl<<t<<"초가 됨"<<endl;
         int nextRow=snake.front().first+dx[dir];
         int nextCol=snake.front().second+dy[dir];
+        //cout<<nextRow<<","<<nextCol<<"을 검사"<<endl;
 
+        if(nextRow<=0||nextRow>N||nextCol<=0||nextCol>N){
+            //cout<<"벽과 충돌"<<endl;
+            break;
+        }
+        bool breakBit=false;
         for(int i=0;i<snake.size();i++){
             if(snake[i].first==nextRow&&snake[i].second==nextCol){
+               // cout<<"몸과 충돌"<<endl;
+                breakBit=true;
                 break;
             }
         }
-        if(nextRow<0||nextRow>=N||nextCol<0||nextCol>=N){
-            break;
-        }
+        if(breakBit) break;
         //2. 그렇지 않다면, snake가 사과를 먹는지?
         snake.push_front(make_pair(nextRow,nextCol));
 
         if(board[nextRow][nextCol]==1){
+            //cout<<"사과를 먹음"<<endl;
             board[nextRow][nextCol]=0;
         }
         else{
+            //cout<<"빈 칸에 머리가 도달함"<<endl;
             snake.pop_back();
         }
         
         if(commandQueue.front().time==t){
+            //cout<<t<<"초에 실행 명령이 있음"<<endl;
             dir=getNextDirection(dir,commandQueue.front().com);
             commandQueue.pop();
         }
