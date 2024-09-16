@@ -26,7 +26,7 @@ struct point{
 
 //더 이상 진행할 수 없을 경우 현재 몇 초가 지났는지를 출력한다.
 bool canMove(int row,int col){
-    if(row<0||row>=N||col<0||col>=N){
+    if(((row<0||row>=N)||col<0)||col>=N){
         return false;
     }
     else{
@@ -74,22 +74,54 @@ int main(){
                 int nextCol=curCol+dy[i];
                 int nextDist=curDist+1;
                 if((canMove(nextRow,nextCol)&&board[nextRow][nextCol]<=babySharkSize)&&!visited[nextRow][nextCol]){
+                    //cout<<babySharkSize<<"사이즈의 상어가"<<board[nextRow][nextCol]<<"이 적힌 칸에 도달함"<<endl;
                     visited[nextRow][nextCol]=true;
                     if(board[nextRow][nextCol]<babySharkSize&&board[nextRow][nextCol]!=0){
-                            cout<<"먹을 수 있는"<<board[nextRow][nextCol]<<"사이즈 물고기 발견!"<<endl;
-                            board[nextRow][nextCol]=0;
+                            //발견했으면 큐에 삽입하는 행위는 멈추고, 남은 큐를 다 비우면서 거리가 nextDist인 점들만 전부 다 훑어본다.
+                            //그 중 i와 j가 가장 작은 점으로 이동해야 한다.
+                            int minI=nextRow;
+                            int minJ=nextCol;
+                            while(!q.empty()){
+                                int x=q.front().row;
+                                int y=q.front().col;
+                                int c=q.front().dist;
+                                q.pop();
+                                for(int m=0;m<4;m++){
+                                    int nR=x+dx[m];
+                                    int nC=y+dy[m];
+                                    if(((canMove(nR,nC)&&board[nR][nC]<=babySharkSize)&&!visited[nR][nC])&&(c+1==nextDist)){
+                                        
+                                        visited[nR][nC]=true;
+                                        if(board[nR][nC]<babySharkSize&&board[nR][nC]!=0){
+                                            if(nR<minI){
+                                                minI=nR;
+                                                minJ=nC;
+                                            }
+                                            else if(nR==minI){
+                                                if(nC<minJ){
+                                                    minI=nR;
+                                                    minJ=nC;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            board[babySharkRow][babySharkCol]=0;
+                            board[minI][minJ]=9;
                             if(++currentExp==babySharkSize){
                                 babySharkSize++;
                                 currentExp=0;
                             }
-                            babySharkRow=nextRow;
-                            babySharkCol=nextCol;
-                            elapsed+=(curDist+1);
+                            babySharkRow=minI;
+                            babySharkCol=minJ;
+                            elapsed+=(nextDist);
+                            found=true;
                         break;
                     }
                     else{//먹을 수는 없어도 지나갈 수는 있는 경우
-
-                        q.push(point(nextRow,nextCol,curDist+1));
+                        q.push(point(nextRow,nextCol,nextDist));
                     }
                 
                 }
