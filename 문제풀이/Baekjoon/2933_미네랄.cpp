@@ -37,13 +37,13 @@ bool canMove(int row, int col){
 }
 pair<int,int> cast(int row, int col, int n){// 미네랄이 파괴된 경우 파괴된 미네랄의 위치를 출력한다.
     int direction=n%2;// 0은 왼쪽부터, 1은 오른쪽부터 던짐.
-    if (canMove(row+dx[direction],col)){
-        if(board[row][col]=='x'){//미네랄을 발견한 경우
-            board[row][col]='.';
-            return make_pair(row+dx[direction],col);
+    if (canMove(row,col+dx[direction])){
+        if(board[row][col+dx[direction]]=='x'){//미네랄을 발견한 경우
+            board[row][col+dx[direction]]='.';
+            return make_pair(row,col+dx[direction]);
         }
         else{
-            return cast(row+dx[direction],col,n);
+            return cast(row,col+dx[direction],n);
         }   
     }
     else{
@@ -73,7 +73,7 @@ void dfs(int row, int col, int current){
     for(int i=0;i<4;i++){
             int nextRow=row+dx[i];
             int nextCol=col+dy[i];
-            if((canMove(nextRow,nextCol)&&!visited[nextRow,nextCol])&&board[nextRow][nextCol]=='x'){
+            if((canMove(nextRow,nextCol)&&!visited[nextRow][nextCol])&&board[nextRow][nextCol]=='x'){
                 dfs(nextRow,nextCol,current);
             }
         }
@@ -96,15 +96,20 @@ int main(){
     for(int i=0;i<N;i++){
         pair<int,int> distroyed;
 
+        
+
+
+        if(i%2==0){
+            distroyed= cast(throwing[i],-1,i);
+        }
+        else{
+            distroyed= cast(throwing[i],C,i);
+        }
+        
         int row=distroyed.first;
         int col=distroyed.second;
 
-        if(i%2==0){
-            distroyed= cast(-1,throwing[i],i);
-        }
-        else{
-            distroyed= cast(C,throwing[i],i);
-        }
+        cout<<row<<","<<col<<"이 파괴됨"<<endl;
         //미네랄의 파괴가 완료된 시점.
         if(distroyed.first==-1) continue;//아무것도 파괴되지 않았다면 다음 명령으로 넘어간다.
         //distroyed 위치의 미네랄이 파괴된 경우
@@ -112,10 +117,17 @@ int main(){
         clearTestBoard();
         
         for(int i=0;i<C;i++){//바닥과 연결된 클러스터를 먼저 찾는다.
-            if(!visited[0][C]&&board[0][i]=='x'){
-                dfs(0,i,1);
+            if(!visited[R-1][i]&&(board[R-1][i]=='x')){
+                dfs(R-1,i,1);
             }
         }
+
+        for(int i=0;i<R;i++){
+                for(int j=0;j<C;j++){
+                    cout<<testBoard[i][j]<<" ";
+                }
+                cout<<endl;
+            }
         int currentNum=1;
         bool multiClusters=false;
         for(int i=0;i<4;i++){
@@ -125,11 +137,13 @@ int main(){
                 currentNum++;
                 if(currentNum==2){
                     multiClusters=true;
+                    cout<<"클러스터 발견"<<endl;
                 }
                 dfs(nextRow,nextCol,currentNum);
             }
         }
         if(multiClusters){//바닥과 연결된 클러스터는 1, 떠있는 클러스터는 2이다.
+    
             int fallingDistance=9999;
             for(int i=0;i<C;i++){
                 int firstOne=9999;
