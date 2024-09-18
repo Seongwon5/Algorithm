@@ -78,6 +78,13 @@ void dfs(int row, int col, int current){
             }
         }
 }
+int calculateDistance(int row, int col, int curDist){
+    if(row+1==R||testBoard[row+1][col]==1) return curDist;
+    if(testBoard[row+1][col]==2)return 9999;
+    else{//계속 0을 만나고 있을 때
+        return calculateDistance(row+1,col,curDist+1);
+    }
+}
 
 int main(){
     cin>>R>>C;
@@ -109,7 +116,6 @@ int main(){
         int row=distroyed.first;
         int col=distroyed.second;
 
-        cout<<row<<","<<col<<"이 파괴됨"<<endl;
         //미네랄의 파괴가 완료된 시점.
         if(distroyed.first==-1) continue;//아무것도 파괴되지 않았다면 다음 명령으로 넘어간다.
         //distroyed 위치의 미네랄이 파괴된 경우
@@ -122,12 +128,6 @@ int main(){
             }
         }
 
-        for(int i=0;i<R;i++){
-                for(int j=0;j<C;j++){
-                    cout<<testBoard[i][j]<<" ";
-                }
-                cout<<endl;
-            }
         int currentNum=1;
         bool multiClusters=false;
         for(int i=0;i<4;i++){
@@ -137,67 +137,36 @@ int main(){
                 currentNum++;
                 if(currentNum==2){
                     multiClusters=true;
-                    cout<<"클러스터 발견"<<endl;
                 }
                 dfs(nextRow,nextCol,currentNum);
             }
         }
         if(multiClusters){//바닥과 연결된 클러스터는 1, 떠있는 클러스터는 2이다.
-    
-            int fallingDistance=9999;
-            for(int i=0;i<C;i++){
-                int firstOne=9999;
-                int lastOne=-1;
-                int firstTwo=9999;
-                int lastTwo=-1;
-
-                for(int j=0;j<R;j++){
-                    int num=testBoard[j][i];
-                    if(num==1){
-                        firstOne=min(firstOne,j);
-                        lastOne=max(lastOne,j);
+            int minDist=9999;
+            for(int i=0;i<R;i++){
+                for(int j=0;j<C;j++){
+                    if(testBoard[i][j]==2){
+                        minDist=min(minDist,calculateDistance(i,j,0));
                     }
-                    else if(num==2){
-                        firstTwo=min(firstTwo,j);
-                        lastTwo=max(lastTwo,j);
-                    }
-                }
-
-                if(firstTwo==9999&&firstOne==9999){
-                    continue;
-                }
-                else if(firstTwo!=9999&&firstOne==9999){
-                    fallingDistance=min(fallingDistance,R-lastTwo);
-                }
-                else if(firstTwo==9999&&firstOne!=9999){
-                    continue;
-                }
-                else{//둘 다 존재하는 경우
-                    fallingDistance=min(fallingDistance,firstOne-lastTwo);
                 }
             }
-
-            //이제 2로 표시된 칸들에 해당하는 보드의 클러스터를 떨굼.
 
             for(int i=R-1;i>=0;i--){
                 for(int j=0;j<C;j++){
                     if(testBoard[i][j]==2){
                         board[i][j]='.';
-                        board[i+fallingDistance][j]='x';
+                        board[i+minDist][j]='x';
                     }
                 }
             }
 
         }
+    }
+    for(int i=0;i<R;i++){
+        for(int j=0;j<C;j++){
+            cout<<board[i][j];
+        }
         cout<<endl;
-            for(int i=0;i<R;i++){
-                for(int j=0;j<C;j++){
-                    cout<<board[i][j]<<" ";
-                }
-                cout<<endl;
-            }
-
-
     }
 
 }
